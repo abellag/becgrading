@@ -177,6 +177,9 @@ class RecordingController extends Controller {
              $checkNotification =   DB::table('gradeNotification')->Insert($data);
              
                 return $checkNotification;
+                echo "ok";
+                
+                
             }
         }
     }
