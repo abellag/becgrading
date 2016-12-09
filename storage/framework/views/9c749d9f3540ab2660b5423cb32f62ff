@@ -1,0 +1,153 @@
+<?php $__env->startSection('content'); ?>
+
+<?php if(isset($gradeStat) && isset($subjects)): ?>
+ <?php $Statgrade =  $gradeStat -> status ?>
+    <?php if(count($subjects)>0): ?>
+        <?php foreach($subjects as $subject): ?>
+              <?php $Statsubjects = $subject -> status ?>
+          
+        <?php endforeach; ?>
+    <?php else: ?>
+        <?php $Statsubjects = '' ?>
+        <?php $Statgrade =  '' ?>
+    <?php endif; ?>
+
+<?php else: ?>
+    <?php $Statsubjects = "''" ?>
+    <?php $Statgrade =  "''" ?>
+    
+     
+<?php endif; ?>
+
+<?php $__env->startSection('scripts'); ?>
+<script  type="text/javascript">
+    
+    window.onload = function () {
+        scrollDiv_init();
+        enable_input(false,'all',<?php echo e($Statgrade); ?>,<?php echo e($Statsubjects); ?>);
+        
+    }// my custom script
+</script>
+<?php $__env->stopSection(); ?>
+
+
+
+<div class="container_fluid">
+    <div class="row">
+        <div class="col-md-3">
+
+            <div class ="list-group" style="padding-left: 20px">
+                <div class="list-group-item active" style="background-color:#333300"><span class="glyphicon glyphicon-user" aria-hidden="true"></span><b> Dashboard</b></div>    
+                <div class = "list-group-item" id="profile">
+                    <span class="glyphicon glyphicon-book" aria-hidden="true"></span> Your Courses	
+
+                    <ul style="overflow:auto;height:150px" class="list-group">
+                        <?php if(count($loads)>0): ?>    
+                        <?php foreach($loads as $load): ?>
+                        <li class="list-group-item"><a href="<?php echo e(url('viewgrade',array($load->scheduleid,$load->subject))); ?>"><?php echo e($load->subject); ?></a></li>
+                        <?php endforeach; ?>
+                        <?php endif; ?>
+                    </ul>
+
+                </div>
+                <div onMouseOver="pauseDiv()" onMouseOut="resumeDiv()" class = "list-group-item" id="profile">
+                    <span class="glyphicon glyphicon-book" aria-hidden="true"></span> Messages	
+
+                    <ul class="list-group" id="MyDivName" style="overflow:auto;height:150px">
+                        <?php if(count($message)>0): ?>    
+                            <?php foreach($message as $messages): ?>
+                            <?php if($messages -> status == 2): ?>
+                            <li class="list-group-item" style="background-color: #f2f2f2">
+                            <?php else: ?>
+                            <li class="list-group-item">
+                            <?php endif; ?>
+                                <a href="<?php echo e(url('viewgrade',array($messages->scheduleid))); ?>"><?php echo e(str_limit($messages->comment,15 ,'.....')); ?></a></li>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </ul>
+
+                </div>
+            </div>    
+        </div>
+        <div class="col-lg-9">
+            <?php if(isset($subjects)): ?>
+            <?php if(count($subjects)>0): ?>
+            <h3> Subject : <span style="color:red"><?php echo e($currentsubject); ?></span></h3>
+            <table class="table table-striped" style="padding-right:10px"><tr><td>Student ID</td><td>Student Name</td><td>Prelim</td><td>Midterm</td><td>Semifinal</td><td>Final</td></tr>
+                <?php foreach($subjects as $subject): ?>
+                <tr><td><?php echo e($subject->studentid); ?></td><td><?php echo e($subject->lastName); ?>, <?php echo e($subject->firstName); ?></td>
+                    <td>
+                        <?php if($subject->status == '1'): ?>
+                        <input  type="text" class="prelim" id="prelim" name="prelim"  maxlength="4" size="4" value= "<?php echo e($subject->prelim); ?>" onkeyup="addGrade('<?php echo e($subject->id2); ?>', '1', this.value)">
+                        <?php else: ?>
+                        <?php echo e($subject->prelim); ?>
+
+                        <?php endif; ?>
+                    </td>
+
+                    <td>
+                        <?php if($subject->status == '2'): ?>
+                        <input type="text" style="text-align:center" id="midterm" name="midterm"  maxlength="4" size="4" value= "<?php echo e($subject->midterm); ?>"  onkeyup="addGrade('<?php echo e($subject->id2); ?>', '2', this.value)">
+                        <?php else: ?>
+                        <?php echo e($subject->midterm); ?>
+
+                        <?php endif; ?>
+                    </td>
+                    <td>
+                        <?php if($subject->status == '3'): ?>
+                        <input type="text" id="semifinals" name="semifinals"   style="text-align:center"  maxlength="4" size="4" value= "<?php echo e($subject->semifinals); ?>"  onkeyup="addGrade('<?php echo e($subject->id2); ?>', '3', this.value)">
+                        <?php else: ?>
+                        <?php echo e($subject->semifinals); ?>
+
+                        <?php endif; ?>
+                    </td>
+                    <td>
+                        <?php if($subject->status == '4'): ?>
+                        <input type="text" id="finals" maxlength="4" name="finals"  style="text-align:center"   size="4" value= "<?php echo e($subject->finals); ?>"  onkeyup="addGrade('<?php echo e($subject->id2); ?>', '4', this.value)">
+                        <?php else: ?>
+                        <?php echo e($subject->finals); ?>
+
+                        <?php endif; ?>
+                    </td>
+
+
+                </tr>
+                <?php endforeach; ?>
+            </table>  
+            <form id="userform" name="userform" method="POST" action="<?php echo e(url('/recording/update/')); ?>">
+                <input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">
+                <input type="hidden" value="<?php echo e($id); ?>" name="schedid" />
+                <div class="checkbox">
+                    <label><input type="checkbox" name="check1" class="checkbox" onclick="enable_input(this.checked, 'button', 0, 0)"/>  Submit Final Grade</label>
+                </div>
+                <div class="checkbox">
+                    <label><input type="checkbox" name="check2" class="checkbox" onclick="enable_input(this.checked, 'comment', 0, 0)"/> Add Comment</label>
+                </div>
+                <textarea form="userform" class="form-control" rows="5" name="comment" placeholder="Insert important message for grades...."></textarea> <br />
+                <button name="button" class="btn btn-primary" type="submit" value="submit">Submit</button>
+                <!--input type="submit" class="btn btn-primary" value="Submit" name="submit"-->
+
+
+            </form>
+            <?php endif; ?>
+            <?php endif; ?>
+
+        </div>    
+    </div>   
+</div>    
+<script>
+                                    function addGrade(id, type, value1){
+                                    $.ajax({
+                                    type: "GET",
+                                            url: "/recording/update/" + id + "/" + type + "/" + value1,
+                                            success:function(data){
+                                            //alert(data);
+                                            }
+                                    });
+                                    }
+
+</script>
+
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

@@ -1,0 +1,114 @@
+<?php $__env->startSection('content'); ?>
+
+<div class="container_fluid">
+    <div class="row">
+        <div class="col-md-3">
+
+            <div class ="list-group" style="padding-left: 20px">
+                <div class="list-group-item active" style="background-color:#333300"><span class="glyphicon glyphicon-user" aria-hidden="true"></span><b> Dashboard</b></div>    
+                <div class = "list-group-item" id="profile">
+                    <span class="glyphicon glyphicon-book" aria-hidden="true"></span> For Approval	
+
+                    <ul class="list-group">
+
+                        <?php if(count($loads)>0): ?>    
+                        <?php foreach($loads as $load): ?>
+                        <?php $x = 1;
+                        
+                        $x++ ?>
+                        <ul class="list-group-item"><a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo e($x); ?>" aria-expanded="false" aria-controls="collapse<?php echo e($x); ?>"><?php echo e($load->instructorid); ?></a>
+                                    <div  id="collapse<?php echo e($x); ?>" class="collapse" role="tabpanel" aria-labelledby="heading<?php echo e($x); ?>">
+                                        
+                                    <?php if(count($data)>0): ?>    
+                                   <?php foreach($data as $datas): ?>
+                                        
+                                        <?php if(
+                                        $datas->instructorid == $load->instructorid): ?>
+                                         <li><a href="<?php echo e(url('viewgradeApprover',array($datas->scheduleid,$datas->subject))); ?>"><?php echo e($datas->subject); ?></a></li>  
+                                        <?php endif; ?>
+                                   <?php endforeach; ?>
+                                   <?php endif; ?>
+                                   </div>
+                        </ul>
+                        <?php endforeach; ?>
+                        <?php endif; ?>
+
+
+                        <li class="list-group-item"></li>
+
+                        `</ul>
+
+                </div>
+                
+                
+                
+            </div>    
+        </div>
+        <div class="col-lg-9">
+            <?php if(isset($subjects)): ?>
+            <?php if(count($subjects)>0): ?>
+            <h3> Subject : <span style="color:red"><?php echo e($currentsubject); ?></span></h3>
+            <table class="table table-striped" style="padding-right:10px"><tr><td>Student ID</td><td>Student Name</td><td>Prelim</td><td>Midterm</td><td>Semifinal</td><td>Final</td></tr>
+                <?php foreach($subjects as $subject): ?>
+                <tr><td><?php echo e($subject->studentid); ?></td><td><?php echo e($subject->lastName); ?>, <?php echo e($subject->firstName); ?></td>
+                    
+                        <?php if($subject->status == '1' && $subject->prelim < 75): ?>
+                        <td style="background-color: red">
+                        <?php elseif($subject->status == '1'): ?>
+                        <td style="background-color: #f2f2f2">
+                        <?php endif; ?>
+                        <?php echo e($subject->prelim); ?>
+
+                    </td>
+
+                    <td>
+                        <?php if($subject->status == '2' && $subject->midterm < 75): ?>
+                        <td style="background-color: red">
+                        <?php elseif($subject->status == '2'): ?>
+                        <td style="background-color: #f2f2f2">
+                        <?php endif; ?>
+                        <?php echo e($subject->midterm); ?>
+
+                    </td>
+                    <td>
+                        <?php if($subject->status == '3' && $subject->semifinals < 75): ?>
+                        <td style="background-color: red">
+                        <?php elseif($subject->status == '3'): ?>
+                        <td style="background-color: #f2f2f2">
+                        <?php endif; ?>
+                        <?php echo e($subject->semifinals); ?>
+
+                    </td>
+                    <td>
+                       <?php if($subject->status == '4' && $subject->finals < 75): ?>
+                        <td style="background-color: red">
+                        <?php elseif($subject->status == '4'): ?>
+                        <td style="background-color: #f2f2f2">
+                        <?php endif; ?>
+                        <?php echo e($subject->finals); ?>
+
+                    </td>
+
+
+                </tr>
+                <?php endforeach; ?>
+            </table>  
+             <form id="userform" name="userform" method="POST" action="<?php echo e(url('/recording/update/')); ?>">
+                <input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">
+                <input type="hidden" value="<?php echo e($id); ?>" name="schedid" />
+                <textarea form="userform" class="form-control" rows="5" name="comment" placeholder="Remarks...."></textarea> <br />
+                <button name="button" class="btn btn-primary" type="submit" value="approve">Approve</button>
+                <button name="button" class="btn btn-primary" type="submit" value="disapprove">Disapprove</button>
+                
+            </form>
+        <?php endif; ?>
+        <?php endif; ?>
+        </div>    
+    </div>   
+</div>    
+
+
+
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

@@ -1,0 +1,96 @@
+<?php $__env->startSection('content'); ?>
+
+
+<div class="container_fluid">
+    <div class="row">
+        <div class="col-md-3">
+            
+        <div class ="list-group" style="padding-left: 20px">
+            <div class="list-group-item active" style="background-color:#333300"><span class="glyphicon glyphicon-user" aria-hidden="true"></span><b> Dashboard</b></div>    
+	<div class = "list-group-item" id="profile">
+        <span class="glyphicon glyphicon-book" aria-hidden="true"></span> Your Courses	
+             
+            <ul class="list-group">
+         <?php if(count($loads)>0): ?>       
+            <?php foreach($loads as $load): ?>
+            <li class="list-group-item"><a href="<?php echo e(url('viewgrade1',array($load->level,$load->subject))); ?>"><?php echo e($load->level); ?> - <?php echo e($load->subject); ?></a></li>
+         <?php endforeach; ?>
+         <?php endif; ?>
+        </ul>
+                
+        </div>
+            </div>    
+        </div>
+        <div class="col-lg-9">
+            <?php if(isset($subjects)): ?>
+            <?php if(count($subjects)>0): ?>
+            <h3> Subject : <span style="color:red"><?php echo e($subject); ?></span></h3>
+            <table class="table table-striped" style="padding-right:10px"><tr><td>Student ID</td><td>Student Name</td><td>first Qtr</td><td>second Qtr</td><td>third Qtr</td><td>fourth Qtr</td><td>Finals</td></tr>
+                <?php foreach($subjects as $subject1): ?>
+                <tr><td><?php echo e($subject1->studentid); ?></td><td><?php echo e($subject1->lastName); ?> , <?php echo e($subject1->firstName); ?></td>
+                    <td>
+                        <?php if($subject1->status == '1'): ?>
+                         <input  type="text" id="firstQTRN"  maxlength="4" size="4" value= "<?php echo e($subject1->firstQTRN); ?>" onkeyup="addGrade('<?php echo e($subject1->id2); ?>','1', this.value)">
+                        <?php else: ?>
+                           <?php echo e($subject1->firstQTRN); ?>
+
+                        <?php endif; ?>
+                    </td>
+                   
+                    <td>
+                        <?php if($subject1->status == '2'): ?>
+                        <input type="text" style="text-align:center" id="secondQTRN"  maxlength="4" size="4" value= "<?php echo e($subject1->secondQTRN); ?>"  onkeyup="addGrade('<?php echo e($subject1->id2); ?>','2', this.value)">
+                        <?php else: ?>
+                           <?php echo e($subject1->secondQTRN); ?>
+
+                        <?php endif; ?>
+                    </td>
+                    <td>
+                        <?php if($subject1->status == '3'): ?>
+                         <input type="text" id="thirdQTRN"   style="text-align:center"  maxlength="4" size="4" value= "<?php echo e($subject1->thirdQTRN); ?>"  onkeyup="addGrade('<?php echo e($subject1->id2); ?>','3', this.value)">
+                        <?php else: ?>
+                           <?php echo e($subject1->thirdQTRN); ?>
+
+                        <?php endif; ?>
+                    </td>
+                    <td>
+                        <?php if($subject1->status == '4'): ?>
+                         <input type="text" id="fourthQTRN" maxlength="4"  style="text-align:center"   size="4" value= "<?php echo e($subject1->fourthQTRN); ?>"  onkeyup="addGrade('<?php echo e($subject1->id2); ?>','4', this.value)">
+                        <?php else: ?>
+                           <?php echo e($subject1->fourthQTRN); ?>
+
+                        <?php endif; ?>
+                    </td>
+                    <td>
+                        <?php if($subject1->status == '5'): ?>
+                         <input type="text" id="finalMarkN" maxlength="4"  style="text-align:center"   size="4" value= "<?php echo e($subject1->finalMarkN); ?>"  onkeyup="addGrade('<?php echo e($subject1->id2); ?>','5', this.value)">
+                        <?php else: ?>
+                           <?php echo e($subject1->finalMarkN); ?>
+
+                        <?php endif; ?>
+                    </td>
+                    
+                </tr>
+                <?php endforeach; ?>
+            </table>    
+            <?php endif; ?>
+            <?php endif; ?>
+        </div>    
+     </div>   
+</div>    
+<script>
+    function addGrade(id, type, value1){
+            $.ajax({
+            type: "GET", 
+            url: "/recording1/update/" + id + "/"+ type +"/"+ value1, 
+            success:function(data){
+                //alert(data);
+    }
+            });
+ }
+
+</script>
+
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
