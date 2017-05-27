@@ -4,6 +4,10 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+        <!--meta content="text/html;charset=utf-8" http-equiv="Content-Type"-->
+        <meta http-equiv="Content-Type'" content="text/plain; charset=utf-8"/>
+        <meta content="utf-8" http-equiv="encoding">
+        <meta content="application/json" charset="utf-8">
         
         <?php if(Auth::guest()): ?>
         <title>Batangas Eastern Colleges</title>
@@ -46,10 +50,16 @@
 <script src="<?php echo e(asset('/script/bootstrap.min.js')); ?>"></script>
 <script src="<?php echo e(asset('/script/fileinput.js')); ?>"></script>
 <script src="<?php echo e(asset('/script/bootstrap-datepicker.js')); ?>"></script>
+
+
+
+
+
+
 </head>
 
-<body> 
-    <?php echo $__env->yieldContent('scripts'); ?>;
+<body>  
+    
   <nav class="navbar navbar-default">      
     <div class= "container-fluid">  
         <div class="navbar-header">
@@ -70,7 +80,7 @@
                             <ul class="nav navbar-nav navbar-right">
 					<?php if(Auth::guest()): ?>
 						<li><a href="<?php echo e(url('/auth/login')); ?>">Login</a></li>
-                                                <li><a href="<?php echo e(url('/auth/register')); ?>">Register</a></li>
+                                                <!--li><a href="<?php echo e(url('/auth/register')); ?>">Register</a></li-->
 					<?php else: ?>
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><?php echo e(Auth::user()->fname); ?> <?php echo e(Auth::user()->lname); ?><span class="caret"></span></a>

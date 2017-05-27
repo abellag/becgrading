@@ -6,7 +6,10 @@
             <name>becgrading</name>
         </data>
         <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
+            <word>elseif</word>
+            <word>endfor</word>
             <word>endif</word>
+            <word>Tinosa</word>
         </spellchecker-wordlist>
     </configuration>
 </project>

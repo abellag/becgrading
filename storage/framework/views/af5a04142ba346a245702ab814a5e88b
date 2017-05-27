@@ -1,6 +1,71 @@
 <?php $__env->startSection('content'); ?>
 
 
+
+
+<?php if(isset($gradeStat) && isset($quarter)): ?>
+    <?php if(count($gradeStat)>0): ?>
+        <?php foreach($gradeStat as $gradeStats): ?>
+              <?php $Statgrade = $gradeStats -> status ?>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <?php $Statgrade =  "0" ?>
+    <?php endif; ?>
+    <?php if(count($quarter)>0): ?>
+        <?php foreach($quarter as $quarters): ?>
+              <?php 
+               $start = $quarters->startDate;   
+              $end = $quarters->endDate;
+              $dateStart = new DateTime($start);
+              $dateEnd = new DateTime($end);
+              $now = new DateTime();
+
+              if($now->format('y-m-d') >= $dateStart->format('y-m-d') && 
+                      $now->format('y-m-d') <= $dateEnd->format('y-m-d') ){
+                  
+                  $dateDiff = $now->diff($dateEnd)->format("d");
+                  $dateLeft = $now->diff($dateEnd)->format("%d");
+                  $messageEncode = 'Days Left for Encoding :';
+                  
+              }else if($now->format('y-m-d') < $dateStart->format('y-m-d') ){
+                   $dateDiff = -1;
+                   $dateLeft = $dateStart->format('y/m/d').'-'.$dateEnd->format('y/m/d');
+                   $messageEncode = 'Encoding starts on :';
+                   
+              }else{
+                  $dateDiff = -1;
+                  $dateLeft = '';
+                  $messageEncode = 'Encoding already finish.';
+                  
+              }
+              
+              $SemQuarter = $quarters->quarter;
+              $Statsubjects = $quarters -> quarter ?>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <?php $dateDiff = -1 ?>
+        <?php $Statsubjects = '' ?>
+        <?php $Statgrade =  '' ?>
+    <?php endif; ?>
+
+<?php else: ?>
+    <?php $dateDiff = -1 ?>
+    <?php $Statsubjects = "0" ?>
+    <?php $Statgrade =  "0" ?>
+    
+     
+<?php endif; ?>
+
+
+<script type="text/javascript">
+    
+    window.onload = function () {
+        enable_input1(false,'all',<?php echo $Statgrade ?>,<?php echo "'".$Statsubjects."'";?>,<?php echo $dateDiff ?>);
+        scrollDiv_init();
+        
+    }// my custom script
+</script>
+
 <div class="container_fluid">
     <div class="row">
         <div class="col-md-3">
@@ -11,26 +76,50 @@
         <span class="glyphicon glyphicon-book" aria-hidden="true"></span> Your Courses	
              
             <ul class="list-group">
-         <?php if(count($loads)>0): ?>       
-            <?php foreach($loads as $load): ?>
-            <li class="list-group-item"><a href="<?php echo e(url('viewgrade1',array($load->level,$load->subject))); ?>"><?php echo e($load->level); ?> - <?php echo e($load->subject); ?></a></li>
-         <?php endforeach; ?>
-         <?php endif; ?>
+                <?php $x = 1;   ?>
+                <?php if(count($loads)>0): ?>    
+                  <?php foreach($loads as $load): ?>
+                                
+                        <?php $x++ ?>
+                    <ul class="list-group-item"><a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo e($x); ?>" aria-expanded="false" aria-controls="collapse<?php echo e($x); ?>"><?php echo e($load->subject); ?></a>
+                        <div  id="collapse<?php echo e($x); ?>" class="collapse" role="tabpanel" aria-labelledby="heading<?php echo e($x); ?>">
+                                      
+                            <?php if(count($data)>0): ?> 
+                                <?php foreach($data as $datas): ?>
+                                        <?php if($datas->subject == $load->subject): ?>
+                                         <li><a href="<?php echo e(url('viewgrade1',array($datas->level,$datas->section,$load->subject,$datas->id))); ?>"><?php echo e($datas->level); ?> - <?php echo e($datas->section); ?></a></li>  
+                                        <?php endif; ?>
+                                   <?php endforeach; ?>
+                                   <?php endif; ?>
+                                    </div>
+                        
+                        
         </ul>
-                
+            <?php endforeach; ?>
+                        <?php endif; ?>    
         </div>
             </div>    
         </div>
         <div class="col-lg-9">
+            <?php if(session('message1')): ?>
+            <div class="col-lg-8 alert alert-success">
+                <?php echo e(session('message1')); ?>
+
+            </div>
+         <?php endif; ?>
             <?php if(isset($subjects)): ?>
             <?php if(count($subjects)>0): ?>
-            <h3> Subject : <span style="color:red"><?php echo e($subject); ?></span></h3>
-            <table class="table table-striped" style="padding-right:10px"><tr><td>Student ID</td><td>Student Name</td><td>first Qtr</td><td>second Qtr</td><td>third Qtr</td><td>fourth Qtr</td><td>Finals</td></tr>
+            <div style="float:left; padding-right: 10%"><h3> Subject : <span style="color:red"><?php echo e($subject); ?></span></h3></div>
+            <div style="float:right;"><h3> <?php echo e($messageEncode); ?> <span style="color:red"><?php echo e($dateLeft); ?></span></h3></div>
+            
+            <table class="table table-striped" style="padding-right:10px"><tr><td>Student ID</td><td>Student Name</td><td>First Qtr</td><td>Second Qtr</td><td>Third Qtr</td><td>Fourth Qtr</td></tr>
                 <?php foreach($subjects as $subject1): ?>
-                <tr><td><?php echo e($subject1->studentid); ?></td><td><?php echo e($subject1->lastName); ?> , <?php echo e($subject1->firstName); ?></td>
+                <tr><td><?php echo e($subject1->studentid); ?></td><td><?php echo strtoupper($subject1->lastname)?> , <?php echo ucwords(strtolower($subject1->firstname))?></td>
+                   
+                    
                     <td>
-                        <?php if($subject1->status == '1'): ?>
-                         <input  type="text" id="firstQTRN"  maxlength="4" size="4" value= "<?php echo e($subject1->firstQTRN); ?>" onkeyup="addGrade('<?php echo e($subject1->id2); ?>','1', this.value)">
+                        <?php if($SemQuarter == 'First Quarter'): ?>
+                         <input  type="text" id="firstQTRN"  class="firstQTRN" maxlength="4" size="4" value= "<?php echo e($subject1->firstQTRN); ?>" onkeyup="addGrade('<?php echo e($subject1->id); ?>','1', this.value)">
                         <?php else: ?>
                            <?php echo e($subject1->firstQTRN); ?>
 
@@ -38,41 +127,54 @@
                     </td>
                    
                     <td>
-                        <?php if($subject1->status == '2'): ?>
-                        <input type="text" style="text-align:center" id="secondQTRN"  maxlength="4" size="4" value= "<?php echo e($subject1->secondQTRN); ?>"  onkeyup="addGrade('<?php echo e($subject1->id2); ?>','2', this.value)">
+                        <?php if($SemQuarter == 'Second Quarter'): ?>
+                        <input type="text" style="text-align:center" id="secondQTRN" class="secondQTRN"  maxlength="4" size="4" value= "<?php echo e($subject1->secondQTRN); ?>"  onkeyup="addGrade('<?php echo e($subject1->id); ?>','2', this.value)">
                         <?php else: ?>
                            <?php echo e($subject1->secondQTRN); ?>
 
                         <?php endif; ?>
                     </td>
                     <td>
-                        <?php if($subject1->status == '3'): ?>
-                         <input type="text" id="thirdQTRN"   style="text-align:center"  maxlength="4" size="4" value= "<?php echo e($subject1->thirdQTRN); ?>"  onkeyup="addGrade('<?php echo e($subject1->id2); ?>','3', this.value)">
+                        <?php if($SemQuarter == 'Third Quarter'): ?>
+                         <input type="text" id="thirdQTRN" class="thirdQTRN"   style="text-align:center"  maxlength="4" size="4" value= "<?php echo e($subject1->thirdQTRN); ?>"  onkeyup="addGrade('<?php echo e($subject1->id); ?>','3', this.value)">
                         <?php else: ?>
                            <?php echo e($subject1->thirdQTRN); ?>
 
                         <?php endif; ?>
                     </td>
                     <td>
-                        <?php if($subject1->status == '4'): ?>
-                         <input type="text" id="fourthQTRN" maxlength="4"  style="text-align:center"   size="4" value= "<?php echo e($subject1->fourthQTRN); ?>"  onkeyup="addGrade('<?php echo e($subject1->id2); ?>','4', this.value)">
+                        <?php if($SemQuarter == 'Fourth Quarter'): ?>
+                         <input type="text" id="fourthQTRN" class="fourthQTRN" maxlength="4"  style="text-align:center"   size="4" value= "<?php echo e($subject1->fourthQTRN); ?>"  onkeyup="addGrade('<?php echo e($subject1->id); ?>','4', this.value)">
                         <?php else: ?>
                            <?php echo e($subject1->fourthQTRN); ?>
 
                         <?php endif; ?>
                     </td>
-                    <td>
-                        <?php if($subject1->status == '5'): ?>
-                         <input type="text" id="finalMarkN" maxlength="4"  style="text-align:center"   size="4" value= "<?php echo e($subject1->finalMarkN); ?>"  onkeyup="addGrade('<?php echo e($subject1->id2); ?>','5', this.value)">
-                        <?php else: ?>
-                           <?php echo e($subject1->finalMarkN); ?>
-
-                        <?php endif; ?>
-                    </td>
+                    
+                         <!--input type="text" id="finalMarkN" class="finalMarkN" maxlength="4"  style="text-align:center"   size="4" value= "<?php echo e($subject1->finalMarkN); ?>"  onkeyup="addGrade('<?php echo e($subject1->id); ?>','5', this.value)"-->
+                           <?php
+                           
+                           ?>
+                        
+                    
                     
                 </tr>
                 <?php endforeach; ?>
             </table>    
+            <form id="userform" name="userform" method="POST" action="<?php echo e(url('/recording/update/')); ?>">
+                <input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">
+                <input type="hidden" value="<?php echo e($schedid); ?>" name="schedid" />
+                
+                <div class="checkbox">
+                    <label><input type="checkbox" name="check1" class="checkbox" onclick="enable_input1(this.checked, 'button', 0, 0,<?php echo e($dateDiff); ?>)"/>  Submit Final Grade</label>
+                </div>
+                <button form="userform" name="button" id="button" class=" btn btn-primary" type="submit" value="submit">Submit</button>
+                <a href="<?php echo e(url('/view/gradesheet/highelem',array($schedid))); ?>" ><button name="button1" class="btn btn-primary" type="button" value="view">View Grade Sheet</button></a>
+                
+                <!--nput type="submit" class="btn btn-primary" value="Submit" name="submit"-->
+
+
+            </form>
             <?php endif; ?>
             <?php endif; ?>
         </div>    

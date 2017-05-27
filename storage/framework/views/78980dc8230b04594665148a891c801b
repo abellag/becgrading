@@ -57,12 +57,17 @@
 							<div class="col-md-6">
                                                             <select name="accesslevel" class='form-control'>
                                                                 <option>Select Access...</option>
-                                                                <option value="10">College Teacher</option>
-                                                                <option value="20">K - 12 Teacher</option>
-                                                                <option value="30">Junior High Teacher</option>
-                                                                <option value="40">Elementary Teacher</option>
-                                                                <option value="50">Highest Approver</option>
-                                                                <option value="2">Registrar</option>
+                                                                <option value="<?php echo e(env('COLLEGE_TEACHER')); ?>">College Teacher</option>
+                                                                <option value="<?php echo e(env('SENIOR_HIGH_SCHOOL')); ?>">Senior High School Teacher</option>
+                                                                <option value="<?php echo e(env('JUNIOR_HIGH_TEACHER')); ?>">Junior High Teacher</option>
+                                                                <option value="<?php echo e(env('PRIMARY_TEACHER')); ?>">Primary Education Teacher</option>
+                                                                <option value="<?php echo e(env('PRE_SCHOOL_TEACHER')); ?>">Pre-School Teacher</option>
+                                                                <option value="<?php echo e(env('DIPLOMA_TEACHER')); ?>">Diploma Teacher</option>
+                                                                <option value="<?php echo e(env('HIGHEST_APPROVER')); ?>">Highest Approver</option>
+                                                                <option value="<?php echo e(env('REGISTRAR')); ?>">Registrar</option>
+                                                                <option value="<?php echo e(env('OTHERS')); ?>">Others</option>
+                                                                
+                                                                
                                                                 
                                     
                                                            </select>     
@@ -89,7 +94,7 @@
 						<div class="form-group">
 							<div class="col-md-6 col-md-offset-4">
 								<button type="submit" class="btn btn-primary">
-									Register
+									Next
 								</button>
 							</div>
 						</div>

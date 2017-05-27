@@ -1,0 +1,129 @@
+<?php $__env->startSection('content1'); ?>        
+
+<script>
+
+function addGrade1(id, type, value1){
+                                    $.ajax({
+                                    type: "GET",
+                                            url: "/recording/update/" + id + "/" + type + "/" + value1,
+                                            success:function(data){
+                                            //alert(data);
+                                            }
+                                    });
+                                    }
+
+</script>
+
+<div class="col-lg-9" id="grade">
+            <?php if(isset($subjects)): ?>
+            <?php if(count($subjects)>0): ?>
+            <h3> Subject : <span style="color:red"><?php echo e($currentsubject); ?></span></h3>
+            <table class="table table-striped" style="padding-right:10px"><tr><td>Student ID</td><td>Student Name</td><td>first Qtr</td><td>second Qtr</td><td>third Qtr</td><td>fourth Qtr</td><td>Finals</td><td>Action</td></tr>
+                <?php foreach($subjects as $subject): ?>
+                <tr><td><?php echo e($subject->studentid); ?></td><td><?php echo strtoupper($subject->lastname)?> , <?php echo ucwords(strtolower($subject->firstname))?></td>
+                    
+                        <?php if($subject->status == '1' && $subject->firstQTRN < 75): ?>
+                            <td style="color: red">
+                        <?php elseif($subject->status == '1'): ?>
+                        <td style="background-color: #f2f2f2">
+                        <?php endif; ?>
+                        <?php if($edit==1 && $subject->status == '1'): ?>
+                         <input  type="text" style="text-align:center" id="firstQTRN" name="firstQTRN" class="firstQTRN" maxlength="4" size="4" value="<?php echo e($subject->firstQTRN); ?>" onkeyup="addGrade1('<?php echo e($subject->id); ?>','1', this.value)">
+                       
+                        <?php else: ?>
+                        <?php echo e($subject->firstQTRN); ?>
+
+                        <?php endif; ?>
+                    </td>
+
+                    <td>
+                        <?php if($subject->status == '2' && $subject->secondQTRN < 75): ?>
+                          <td style="color: red">
+                          <?php elseif($subject->status == '2'): ?>
+                        <td style="background-color: #f2f2f2">
+                        <?php endif; ?>
+                         <?php if($edit==1 && $subject->status == '2'): ?>
+                        <input type="text" style="text-align:center" id="secondQTRN"  maxlength="4" size="4" value= "<?php echo e($subject->secondQTRN); ?>"  onkeyup="addGrade('<?php echo e($subject->id); ?>','2', this.value)">
+                        <?php else: ?>
+                           <?php echo e($subject->secondQTRN); ?>
+
+                        <?php endif; ?>
+                        
+                    </td>
+                    <td>
+                        <?php if($subject->status == '3' && $subject->thirdQTRN < 75): ?>
+                         <td style="color: red">
+                          <?php elseif($subject->status == '3'): ?>
+                        <td style="background-color: #f2f2f2">
+                        <?php endif; ?>
+                         <?php if($edit==1 && $subject->status == '3'): ?>
+                        <input type="text" id="thirdQTRN"   style="text-align:center"  maxlength="4" size="4" value= "<?php echo e($subject->thirdQTRN); ?>"  onkeyup="addGrade('<?php echo e($subject->id); ?>','3', this.value)">
+                        <?php else: ?>
+                           <?php echo e($subject->thirdQTRN); ?>
+
+                        <?php endif; ?>
+                    </td>
+                    <td>
+                       <?php if($subject->status == '4' && $subject->fourthQTRN < 75): ?>
+                            <td style="color: red">
+                            <?php elseif($subject->status == '4'): ?>
+                        <td style="background-color: #f2f2f2">
+                        <?php endif; ?>
+                         <?php if($edit==1 && $subject->status == '4'): ?>
+                       <input type="text" id="fourthQTRN" maxlength="4"  style="text-align:center"   size="4" value= "<?php echo e($subject->fourthQTRN); ?>"  onkeyup="addGrade('<?php echo e($subject->id); ?>','4', this.value)">
+                        <?php else: ?>
+                           <?php echo e($subject->fourthQTRN); ?>
+
+                        <?php endif; ?>
+                    </td>
+                    <td>
+                       <?php if($subject->status == '5' && $subject->finalMarkN < 75): ?>
+                            <td style="color: red">
+                            <?php elseif($subject->status == '5'): ?>
+                        <td style="background-color: #f2f2f2">
+                        <?php endif; ?>
+                         <?php if($edit==1 && $subject->status == '5'): ?>
+                       <<input type="text" id="finalMarkN" maxlength="4"  style="text-align:center"   size="4" value= "<?php echo e($subject->finalMarkN); ?>"  onkeyup="addGrade('<?php echo e($subject->id); ?>','5', this.value)">
+                        <?php else: ?>
+                           <?php echo e($subject->finalMarkN); ?>
+
+                        <?php endif; ?>
+                    </td>
+                    <td><?php
+                    $newLev = intval(substr($level, -2));?>
+                    <?php if($newLev<7): ?>
+                        <a href="<?php echo e(url('/tor/elementary',array($subject->studentid,$level,$subject->department))); ?>" >view TOR</a>
+                    <?php else: ?>
+                        <a href="<?php echo e(url('/tor/highschool',array($subject->studentid,$subject->department))); ?>" >view TOR</a>
+                    <?php endif; ?>
+                    </td>
+                      
+                    
+                    
+
+
+                </tr>
+                <?php endforeach; ?>
+            </table>  
+            
+             <form id="userform" name="userform" method="GET" action="<?php echo e(url('/')); ?>">
+                <!--input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">
+                <input type="hidden" value="<?php echo e($id); ?>" name="schedid" />
+                <textarea form="userform" class="form-control" rows="5" name="comment" placeholder="Remarks...."></textarea> <br /-->
+                <div style="float:left;"> <button  form="userform" name="button" class="btn btn-primary" type="submit" value="close">Close</button>
+                   </form>
+            </div> 
+                <div style="float:left; margin-left: 2%">
+                        <a href="<?php echo e(url('/viewgradeApprover1',array($id,$level,$section,$currentsubject,$instructorid,  1))); ?>"><button name="button" class="btn btn-primary" value="edit">Edit</button></a> 
+                        </div>
+                
+            
+            <!--button name="button" class="btn btn-primary" onclick="showInput(<?php echo e($id); ?>, '<?php echo e($currentsubject); ?>', 1)" value="edit">Edit</button-->
+            
+            
+        <?php endif; ?>
+        <?php endif; ?>
+        </div>  
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('/recording/approver', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

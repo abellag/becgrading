@@ -14,8 +14,8 @@
     @endif
 
 @else
-    <?php $Statsubjects = "''" ?>
-    <?php $Statgrade =  "''" ?>
+    <?php $Statsubjects = "0" ?>
+    <?php $Statgrade =  "0" ?>
     
      
 @endif
@@ -36,24 +36,23 @@
             <div class ="list-group" style="padding-left: 20px">
                 <div class="list-group-item active" style="background-color:#333300"><span class="glyphicon glyphicon-user" aria-hidden="true"></span><b> Dashboard</b></div>    
                 <div class = "list-group-item" id="profile">
-                    <span class="glyphicon glyphicon-book" aria-hidden="true"></span> For Approval	
+                    <span class="glyphicon glyphicon-book" aria-hidden="true"></span>
+                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#college" aria-expanded="true" aria-controls="college">College</a>
 
-                    <ul class="list-group">
+                    <ul class="list-group collapse" id="college" role="tabpanel" aria-labelledby="college">
 
-                        @if(count($loads)>0)    
-                        @foreach($loads as $load)
-                        <?php $x = 1;
-                        
-                        $x++ ?>
-                        <ul class="list-group-item"><a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse{{$x}}" aria-expanded="false" aria-controls="collapse{{$x}}">{{ $load->instructorid }}</a>
+                       <?php $x = 1;   ?>
+                @if(count($loads)>0)    
+                  @foreach($loads as $load)
+                        <?php $x++ ?>
+                        <ul class="list-group-item"><a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse{{$x}}" aria-expanded="false" aria-controls="collapse{{$x}}">{{ $load->name }}</a>
                                     <div  id="collapse{{$x}}" class="collapse" role="tabpanel" aria-labelledby="heading{{$x}}">
                                         
                                     @if(count($data)>0)    
                                    @foreach($data as $datas)
                                         
-                                        @if(
-                                        $datas->instructorid == $load->instructorid)
-                                         <li><a href="{{url('viewgradeApprover',array($datas->scheduleid,$datas->subject))}}">{{ $datas->subject }}</a></li>  
+                                        @if($datas->instructor == $load->instructor)
+                                         <li><a href="{{url('/viewgradeApprover',array($datas->scheduleid,$datas->subject,0))}}">{{ $datas->subject }}</a></li>  
                                         @endif
                                    @endforeach
                                    @endif
@@ -63,75 +62,165 @@
                         @endif
 
 
-                        <li class="list-group-item"></li>
+                        </ul>
 
-                        `</ul>
+                </div>
+                
+                @for($i = 1; $i < 4; $i++)
+                <?php
+                $department;
+                switch($i){
+                    case 1: $department = "Senior High School"; $codeDept = "shs"; break;
+                    case 2: $department = "Junior High School"; $codeDept = "jhs";break;
+                    case 3: $department = "Primary Education"; $codeDept = "psgs";break;
+                }
+                
+                ?>
+                <div class = "list-group-item" id="profile">
+                    <span class="glyphicon glyphicon-book" aria-hidden="true"></span>
+<a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#{{$codeDept}}" aria-expanded="true" aria-controls="{{$codeDept}}">{{$department}}</a>
 
+                    <ul class="list-group collapse"  id="{{$codeDept}}" role="tabpanel" aria-labelledby="{{$codeDept}}">
+
+                       <?php $x = 1;  $y = 1; $z = 1; ?>
+                @if(count($teacher > 0))
+                  @foreach($teacher as $teachers)
+                        <?php $x++ ?>
+                        
+                        @if(($teachers->accesslevel== env('SENIOR_HIGH_SCHOOL') && $department == "Senior High School") || $teachers->accesslevel== env('OTHERS') )
+                        <ul class="list-group-item"><a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse{{$codeDept}}{{$x}}" aria-expanded="false" aria-controls="collapse{{$codeDept}}{{$x}}">{{ $teachers->name }}</a>
+                        </ul>
+                            @elseif(($teachers->accesslevel== env('JUNIOR_HIGH_TEACHER') && $department == "Junior High School" ) || $teachers->accesslevel== env('OTHERS') )
+                         <ul class="list-group-item"><a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse{{$codeDept}}{{$x}}" aria-expanded="false" aria-controls="collapse{{$codeDept}}{{$x}}">{{ $teachers->name }}</a>
+                        </ul>
+                             @elseif(($teachers->accesslevel== env('PRIMARY_TEACHER') && $department == "Primary Education" ) || $teachers->accesslevel== env('OTHERS') )
+                         <ul class="list-group-item"><a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse{{$codeDept}}{{$x}}" aria-expanded="false" aria-controls="collapse{{$codeDept}}{{$x}}">{{ $teachers->name }}</a>
+                        </ul>
+                        @endif
+                            <div  id="collapse{{$codeDept}}{{$x}}" class="collapse" role="tabpanel" aria-labelledby="heading{{$x}}">
+                                        
+                                    @if(count($subject1)>0)    
+                                   @foreach($subject1 as $subjects1)
+                                        <?php $y++ ?>
+                                        @if($subjects1->instructorid == $teachers->instructorid && $subjects1-> department == $department)
+                                        <li><ul><a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse{{$codeDept}}{{$x}}{{$y}}" aria-expanded="false" aria-controls="collapse{{$codeDept}}{{$x}}{{$y}}">{{ $subjects1->subject }}</a>
+                                             <div  id="collapse{{$codeDept}}{{$x}}{{$y}}" class="collapse" role="tabpanel" aria-labelledby="heading{{$x}}{{$y}}">
+                                                 @if(count($teacherdata)>0) 
+                                                @foreach($teacherdata as $teacherdatas)
+                                                @if($teacherdatas->subject == $subjects1->subject)
+                                                <li><a href="{{url('/viewgradeApprover1',array($teacherdatas->id,$teacherdatas->level,$teacherdatas->section,$teacherdatas->subject,$teachers->instructorid,0))}}">{{ $teacherdatas->level }} - {{ $teacherdatas->section }}</a></li>  
+                                                @endif
+                                                @endforeach
+                                                @endif
+                                                 </div>
+                                         
+                                            </ul>
+                                         </li>  
+                                        @endif
+                                   @endforeach
+                                   @endif
+                                   </div>
+                        
+                       
+                        @endforeach
+                        @endif
+
+
+                       
+                        </ul>
+
+                </div>
+                
+                @endfor
+                
+                
+                
+                
+                
+                <div class = "list-group-item" id="profile">
+                    <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#setup" aria-expanded="true" aria-controls="setup">SetUp</a>
+                    <ul class="list-group collapse"  id="setup" role="tabpanel" aria-labelledby="setup">
+                        <ul class="list-group-item"><a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#quarterly" aria-expanded="false" aria-controls="quarterly">Quarterly</a>
+                            <ul class="list-group collapse"  id="quarterly" role="tabpanel" aria-labelledby="quarterly">
+                    
+                                
+                            
+                                          <li><a href="{{url('/setup/quarterly',array('college'))}}" >College</a></li>  
+                                          <li><a href="{{url('/setup/quarterly',array('diploma'))}}" >Diploma</a></li>  
+                                          <li><a href="{{url('/setup/quarterly',array('shs'))}}">Senior High School</a></li> 
+                                          <li><a href="{{url('/setup/quarterly',array('jhs'))}}">Junior High School</a></li> 
+                                          <li><a href="{{url('/setup/quarterly',array('psgs'))}}">Primary Education</a></li> 
+                            </ul>
+                            </ul>
+                        <ul class="list-group-item">
+                            <a href="{{url('/add/school/attended')}}">Previous School</a>
+                        </ul>
+                        <!--ul class="list-group-item">
+                            <a href="#" onclick="getPhoto()">Student Photo</a>
+                        </ul-->
+                        <ul class="list-group-item">
+                            <a href="#" onclick="getRegister()">Add Instructor</a>
+                        </ul>
+                        
+                        <!--FOR BACK INCASE NEEDED-->
+                        <!--ul class="list-group-item">
+                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#prevSchool" aria-expanded="false" aria-controls="prevSchool">Previous School</a>
+                            <ul class="list-group collapse"  id="prevSchool" role="tabpanel" aria-labelledby="prevSchool">
+                    
+                                
+                            
+                                          <li><a href="#" onclick="getSearch()">TOR</a></li>  
+                                          <li><a href="#" onclick="getSearchTeacher()">List Per Subject</a></li> 
+                                          <li><a href="#" onclick="getGrade()">Summary Grade Report</a></li> 
+                                          <li><a href="">Report Card</a></li> 
+                            </ul>
+                        </ul-->
+                        
+                        </ul>
+                        
+                    </ul>
+                    <!--a href="{{url('/add/school/attended')}}">Set up</a-->
                 </div>
                 
                 
                 
+                <div class = "list-group-item" id="profile">
+                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#reports" aria-expanded="true" aria-controls="reports">Reports</a>
+
+                    <ul class="list-group collapse" id="reports" role="tabpanel" aria-labelledby="reports">
+
+                       <ul class="list-group-item"><a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseReports" aria-expanded="false" aria-controls="collapseReports"></a>
+                                         <li><a href="#" onclick="getSearch()">TOR</a></li>  
+                                          <li><a href="#" onclick="getSearchTeacher()">List Per Subject</a></li> 
+                                          <li><a href="#" onclick="getGrade()">Summary Grade Report</a></li> 
+                                          <li><a href="#" onclick="viewCertificate()">Certification of Grades</a></li>
+                                          <!--li><a href="">Report Card</a></li--> 
+                         </ul>
+                       
+                            <!--onclick="setQuarterly('college')" {{url('/setup/quarterly',array('college'))}}-->
+                        </ul>
+
+                </div>
+                
             </div>    
         </div>
-        <div class="col-lg-9">
-            @if(isset($subjects))
-            @if(count($subjects)>0)
-            <h3> Subject : <span style="color:red">{{$currentsubject}}</span></h3>
-            <table class="table table-striped" style="padding-right:10px"><tr><td>Student ID</td><td>Student Name</td><td>Prelim</td><td>Midterm</td><td>Semifinal</td><td>Final</td></tr>
-                @foreach($subjects as $subject)
-                <tr><td>{{$subject->studentid}}</td><td>{{$subject->lastName}}, {{$subject->firstName}}</td>
-                    
-                        @if($subject->status == '1' && $subject->prelim < 75)
-                        <td style="background-color: red">
-                        @elseif($subject->status == '1')
-                        <td style="background-color: #f2f2f2">
-                        @endif
-                        {{ $subject->prelim }}
-                    </td>
-
-                    <td>
-                        @if($subject->status == '2' && $subject->midterm < 75)
-                        <td style="background-color: red">
-                        @elseif($subject->status == '2')
-                        <td style="background-color: #f2f2f2">
-                        @endif
-                        {{ $subject->midterm }}
-                    </td>
-                    <td>
-                        @if($subject->status == '3' && $subject->semifinals < 75)
-                        <td style="background-color: red">
-                        @elseif($subject->status == '3')
-                        <td style="background-color: #f2f2f2">
-                        @endif
-                        {{ $subject->semifinals }}
-                    </td>
-                    <td>
-                       @if($subject->status == '4' && $subject->finals < 75)
-                        <td style="background-color: red">
-                        @elseif($subject->status == '4')
-                        <td style="background-color: #f2f2f2">
-                        @endif
-                        {{ $subject->finals }}
-                    </td>
-
-
-                </tr>
-                @endforeach
-            </table>  
-             <form id="userform" name="userform" method="POST" action="{{url('/recording/update/')}}">
-                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                <input type="hidden" value="{{$id}}" name="schedid" />
-                <textarea form="userform" class="form-control" rows="5" name="comment" placeholder="Remarks...."></textarea> <br />
-                <button name="button" class="btn btn-primary" type="submit" value="approve">Approve</button>
-                <button name="button" class="btn btn-primary" type="submit" value="disapprove">Disapprove</button>
-                
-            </form>
-        @endif
-        @endif
-        </div>    
+        @if (session('message'))
+            <div class="col-lg-8 alert alert-{{session('alert')}}">
+                {{ session('message') }}
+            </div>
+         @endif
+         <div id="div1">
+         
+        
+        @yield('content1')
+        </div>
+        
     </div>   
 </div>    
 
+    
 
 
 @stop

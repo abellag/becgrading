@@ -1,0 +1,269 @@
+<?php $__env->startSection('content'); ?>
+<?php
+use App\Http\Controllers\ReportController;
+?>
+<style>
+     @media  print{
+        @page{
+       margin-top:1mm;
+        margin-right: 3mm;
+        margin-left: 3mm;
+        margin-bottom: 0mm;
+        }
+        #tdhdr{
+            width: 50%;
+        }
+        
+    }
+</style>
+
+<style>
+   
+    
+
+#table #th{
+    border-style : solid;
+    border-color :black;
+    border-width : 1px;
+    
+        }
+
+#th {
+    border: 1px solid;
+    height: 5%;
+    text-align:center;
+   
+}
+
+#td{
+    border-left: 1px solid ;
+    border-right: 1px solid;
+    height: 5%;
+    padding-left: 2%;
+    text-align:left;
+   
+}
+
+#tr:last-child {
+    border-bottom: 1px solid;
+    height: 90%;
+}
+
+.newtable{
+    border: none;
+    width: 100%;
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+}
+
+#table{
+            width:100%;
+        }
+        #th{
+            height: 40px;
+            text-align: center;
+        }
+        
+       #td{height: 20px;}
+       #td1{
+           text-align: center;
+       }
+
+       #tdDiv{
+            position: absolute;
+    border-bottom: 1px solid;
+       }
+
+ .td3 {
+            width: 100%;
+            border-bottom: 5px solid red;
+            position: relative;
+        }
+ 
+        .td3:after {
+            content: '';
+            position: absolute;
+            width: 200px;
+            bottom:-10px;
+            left:-20%;
+            
+            border: 5px solid white;
+        }
+        
+        
+
+</style>
+<div class="col-lg-2"></div>
+<div class="col-lg-8"  id="grade" >
+    <div class="panel" style="font-family: 'Georgia', Georgia, serif;padding-left:3%;">
+       <div class="panel-body">
+           
+             <br/>
+             <br/>
+             <br/>
+             <br/>
+             <br/>
+             <br/>
+             <br/>
+             <br/>
+             
+             
+            <?php if(count($studentInfo)>0): ?>
+                <?php foreach($studentInfo as $studentInfos): ?>
+               
+                <?php
+                    $course = ucfirst(ReportController::getCourseName($studentInfos->course));
+                    $dateToday = date("F d, Y");
+                    ?>
+                <table style="width: 100%;">
+                    
+                    <tr>    <td style="width:50%; font-size: 16px;"><div style="float:left; width: 15%">Date</div><div style="height: 17px ; float:left;width: 85%;"><b>:&nbsp;&nbsp;&nbsp;<?php echo e($dateToday); ?></b></div></td></tr>
+                    <tr>   <td style="width:50%; font-size: 16px;"><div style="float:left; width: 15%">Student #</div><div style="height: 17px ; float:left;width: 85%;"><b>:&nbsp;&nbsp;&nbsp;<?php echo e($studentInfos->studentid); ?></b></div></td></tr>
+                    <tr>   <td style="width:50%; font-size: 16px;" ><div style="float:left; width: 15%">Student Name</div><div style="height: 17px ; float:left; width: 85%;"><b>:&nbsp;&nbsp;&nbsp;<?php echo e($studentInfos->lastName); ?>, <?php echo e($studentInfos->firstName); ?> <?php echo e($studentInfos->middleName); ?></b></div></td></tr>
+                    <tr>    <td style="width:50%; font-size: 16px;"><div style="float:left; width: 15%">Course</div><div style="height: 17px ; float:left; width: 85%;"><b>:&nbsp;&nbsp;&nbsp;<?php echo e($course); ?></b></div></td></tr>
+                    
+                    
+                </table>
+                <?php endforeach; ?>
+            <?php endif; ?>
+            <br/>
+             <div class="row">
+                <div class="col-md-12">
+                   <p align="center" style="font-size:18px;"><b>Certification of Grades</b><br/></p>
+                </div>
+            </div>
+            <br/>
+            <div style="margin-left:1%; margin-right: 4%;">
+                <table id="table">
+                    <tr id="tr"><th id="th">Code</th><th id="th">Description</th><th id="th">Final Grade</th><th id="th">Hours</th>
+                        </tr>
+                        <tr id="tr">
+                            <td id="td"></td>
+                            <td id="td" style="text-align:center;"><br/><b><?php echo e($semester); ?>, <?php echo e($schoolyear); ?><br/></b>
+                            </td>
+                            <td id="td"></td>
+                            <td id="td"></td>
+                            
+                        </tr> 
+                        <?php
+                        $generalAverage = 0; $x=0; $totalUnit = 0;
+                        ?>
+                        <?php if(count($records)>0): ?>
+                        <?php foreach($records as $record): ?>
+                        <tr id="tr">
+                            <td id="td"></td>
+                            <td id="td"><?php echo e($record->subject); ?></td>
+                            <td id="td" style="text-align:center;"><?php echo e($record->finalGrade); ?></td>
+                            <td id="td" style="text-align:center;"><?php echo e($record->unit); ?></td>
+                        </tr>
+                        <?php
+                        $x = $x+1;
+                        $totalUnit = $totalUnit + $record->unit;
+                        $generalAverage = ($generalAverage + $record->finalGrade)/$x;
+                        ?>
+                        <?php endforeach; ?>
+                        <?php endif; ?>
+                        <tr id="tr" style="padding:5%;">
+                            <td id="td"><br/></td>
+                            <td id="td" style="text-align:right;"><br/><b><i>General Average:</i></b></td>
+                            <td id="td" style="text-align:center;"><br/><?php echo e($generalAverage); ?><br/></td>
+                            <td id="td" style="text-align:center;"><br/><?php echo e($totalUnit); ?><br/></td>
+                            
+                        </tr>
+                        
+                </table>
+            </div>
+            <div>
+                <br/>
+                
+                <br/>
+                <div>
+                    <table id="table">
+                        <caption style="color:black;"><b>GRADING SYSTEM:</b></caption>
+                        <tr>
+                            <td>1.00 - 99-100</td>
+                            <td>1.50 - 93-95</td>
+                            <td>2.00 - 87-89</td>
+                            <td>2.50 - 81-83</td>
+                            <td>3.00 - 75-77</td>
+                        </tr>
+                        <tr>
+                            <td>1.25 - 96-98</td>
+                            <td>1.75 - 90-92</td>
+                            <td>2.25 - 84-86</td>
+                            <td>2.75 - 78-80</td>
+                            <td>5.00 - 74 and below</td>
+                        </tr>
+                        <tr>
+                            <td>INC - Incomplete</td>
+                            <td>DRP - Dropped</td>
+                            <td>UD - Unofficially Dropped</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>75-100 - Competent</td>
+                            <td>74 and below - Not Competent</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                        
+                        
+                        <td></td>
+                        <td></td>
+                        </tr>
+                    </table>
+                </div>
+                <p>
+                    <br/>
+                    <br/>
+                    <table style="width: 100%;">
+                        
+                        <tr>
+                            
+                            <td align="right" style="padding-right: 5%;">&nbsp;&nbsp;&nbsp;MARIA CRISANTA R. ISLA&nbsp;&nbsp;&nbsp;</td>
+                        </tr>
+                        <tr>
+                           <td align="right" style="padding-right: 13%;">Registrar</td>
+                        </tr>
+                        
+                    </table>
+                    </p>
+                    <div>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                    </div>
+                
+                    
+                </div>
+                
+            </div>
+            
+        </div>     
+    </div>
+    <br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+
+</div>
+
+
+
+
+
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

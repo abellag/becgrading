@@ -1,0 +1,246 @@
+<?php $__env->startSection('content'); ?>
+<?php
+use App\Http\Controllers\ReportController;
+?>
+<style>
+    @media  print{
+        @page{
+        margin-top:-1mm;
+        margin-right: -1mm;
+        margin-left: 4mm;
+        margin-bottom: 1mm;
+        }
+      
+        
+    }
+    
+     #table #tr, #th, #td {
+    border-style : solid;
+    border-color :black;
+    border-width : 1px;
+    
+        }
+        
+        .block{
+            float:left;
+            width: 48%;
+        } 
+      
+        #table{
+            width:100%;
+        }
+        #th{
+            height: 40px;
+            text-align: center;
+        }
+        
+       #td{height: 20px;}
+       #td1{
+           text-align: center;
+       }
+       
+</style>
+<div class="col-lg-2"></div>
+<div class="col-lg-8"  id="grade" >
+    <div class="panel" style="font-family: 'Georgia', Georgia, serif;">
+        <div class="panel-heading" >
+            <br/>
+            <br/>
+        
+             <table>
+                <tr>
+                    <td style="width: 25%" align="right" ><img   src="<?php echo e(URL::asset('images/logo.jpg')); ?>" alt="profile Pic"></td>
+                    <td style="width: 50%;" align="center"><p>
+            Republic of the Philippines<br/>
+            <b><span style="font-size:16px;">DEPARTMENT OF EDUCATION</span></b><br/>
+            REGION IV-A (CALABARZON)<br/>
+            <b>Division of Batangas </b><br/>
+            </p>
+            <p>
+                <b><span style="font-size:16px;">BATANGAS EASTERN COLLEGES</span><br/>
+            Pre-School and Grade School Department <br/>
+            San Juan, Batangas </b><br/>
+            </p></td>
+                    <td style="width: 25%">LRN:12345678910
+                    <?php $photo = $studentid.'-'.$department.'.jpg'; ?> 
+                    <img style="width: 60%; height: auto;"  src="/images/studentphoto/<?php echo $photo?>" alt="profile Pic">                   
+                    
+                    </td>
+                </tr> 
+                
+            </table>
+            
+            
+            
+           
+        </div>
+        <div id="panelBody" class="panel-body" style=" background-position: center !important; background-repeat: no-repeat !important; background-image:url(/images/1batangas-eastern-colleges-logo.jpg) !important;background-size: 60%">
+            <div class="row">
+                <div class="col-md-12">
+                   <p align="center" style="font-size:18px;"><b>ELEMENTARY SCHOOL PERMANENT RECORD </b><br/></p>
+                </div>
+            </div>
+            <?php if(count($studentInfo)>0): ?>
+                <?php foreach($studentInfo as $studentInfos): ?>
+                    
+                
+            <div class="row">
+                <div class="col-md-8">Name: &nbsp;<b><?php echo e($studentInfos->lastName); ?>, <?php echo e($studentInfos->firstName); ?> &nbsp; <?php echo e($studentInfos->middleName); ?></b></div>
+                <div class="col-md-4">Sex: &nbsp;<?php echo e($studentInfos->gender); ?></div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">Date of Birth: &nbsp;<?php echo e($studentInfos->birthDate); ?></div>
+                <div class="col-md-4">Nationality: &nbsp;<?php echo e($studentInfos->nationality); ?></div>
+                <div class="col-md-4">Date Entered: &nbsp;June 06, 2011</div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">Place of Birth: &nbsp;<?php echo e($studentInfos->birthPlace); ?></div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">Parent / Guardian: &nbsp;<?php echo e($studentInfos->mother); ?> / <?php echo e($studentInfos->father); ?> / <?php echo e($studentInfos->parent); ?></div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">Address: &nbsp;<?php echo e($studentInfos->address); ?></div>
+            </div>
+
+                <?php endforeach; ?>
+            <?php endif; ?>
+            <div>
+                <br/>
+                <p align="center"><b>ELEMENTARY SCHOOL PROGRESS</b></p>
+            
+            
+            <table id="table">
+                <tr id="tr" style="font: bold;"><th id="th">School Year</th><th id="th">School Attended</th><th id="th">Level</th><th id="th">School Days</th><th id="th">Days Present</th><th id="th">Final Rating</th></tr>
+                <?php if(count($schoolRecord) > 0): ?>
+                    <?php foreach($schoolRecord as $schoolRecords): ?>
+                        <tr id="tr">
+                            <td id="td"><?php echo e($schoolRecords->schoolyear); ?></td><td id="td"><?php echo e($schoolRecords->schoolAttended); ?></td>
+                            <td id="td"><?php echo e($schoolRecords->level); ?></td><td id="td"><?php echo e($schoolRecords->schoolDays); ?></td>
+                            <td id="td"><?php echo e($schoolRecords->presentDays); ?></td><td id="td"><?php echo e($schoolRecords->finalrating); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+                
+            </table>
+            </div>
+            
+            <div><br/>
+                <div class="row">
+                    <?php
+                    $level1 = substr($level,-1);
+                    $wordLevel = ucfirst(ReportController::getWordNumber($level1));
+                    $nextLevel = ucfirst(ReportController::getWordNumber($level1+1));
+                    $dateToday = date("F d, Y");
+                    ?>
+                    
+                    <div class="col-md-8">Grade:&nbsp;<?php echo e($wordLevel); ?></div>
+                    <div class="col-md-4">School Year: <?php echo e($schoolyear); ?></div>
+                </div>
+                <br/>
+                <table id="table" style="width: 100%;">
+                <tr id="tr"><th id="th">LEARNING AREAS</th><th id="th">1</th><th id="th">2</th><th id="th">3</th><th id="th">4</th><th id="th">Final Rating</th></tr>
+                <?php $c = 0; $average = 0;?>
+                <?php foreach($grade as $grades): ?>
+                <?php $finalrating = ($grades->firstQTRN + $grades->secondQTRN + $grades->thirdQTRN + $grades->fourthQTRN) / 4;
+                      $rating = round($finalrating);
+                      if($grades->subject == 'Music' || $grades->subject == 'Art' || $grades->subject == 'Physical Education' || $grades->subject == 'Health')
+                      { $c = $c + 0;
+                        $average = $average + 0;
+                      }else{
+                        $c = $c + 1;
+                        $average = $average + $rating;
+                      }
+                ?>
+                <tr id="tr">
+                <?php if($grades->subject == 'Music' || $grades->subject == 'Art' || $grades->subject == 'Physical Education' || $grades->subject == 'Health'): ?>
+                <td  id="td" style="padding-left: 5%"><?php echo e($grades->subject); ?></td>
+                <?php else: ?>
+                <td  id="td"><?php echo e($grades->subject); ?></td>
+                <?php endif; ?>
+                    <td  id="td"><?php echo e($grades->firstQTRN); ?></td>
+                    <td  id="td"><?php echo e($grades->secondQTRN); ?></td><td><?php echo e($grades->thirdQTRN); ?></td>
+                    <td  id="td"><?php echo e($grades->fourthQTRN); ?></td>
+                    <td  id="td"><?php echo e($rating); ?></td></tr>
+                
+                
+                <?php endforeach; ?>
+             </table>
+                <table id="table">
+                    <tr>
+                        <?php
+                        
+                        if($average == 0){
+                            $genAverage = 0;
+                        }else{
+                        $genAverage = $average / $c;
+                        }
+                        ?>
+                    
+                        <td id="td1">General Average:<?php echo e($genAverage); ?></td>
+                        <td id="td1">Days of School:<?php echo e($grades->totalDaysSchool); ?></td>
+                        <td id="td1">Days Present:<?php echo e($grades->totalDaysPresent); ?></td>
+                    </tr>
+                    <tr>
+                        <td id="td1">E-06-08-15</td>
+                        <td id="td1">L-04-01-16</td>
+                        <td id="td1"></td>
+                    </tr>
+                </table>
+                
+                <hr  style="height: 5px; background-color: black;">
+                
+                <div>
+                    <p align="center"><b>CERTIFICATION OF TRANSFER</b></p>
+                    <p><b>TO WHOM IT MAY CONCERN</b></p>
+                    <p>This is to certify that this is a true copy of the Elementary School Permanent Record of
+                        <b> <?php echo e($studentInfos->firstName); ?>&nbsp;&nbsp; <?php echo e($studentInfos->middleName); ?>&nbsp;&nbsp;<?php echo e($studentInfos->lastName); ?>.</b>This student is eligible for admission to 
+                        <span style=" border-bottom: 2px solid black;">&nbsp; &nbsp;Grade &nbsp;<?php echo e($nextLevel); ?>&nbsp; &nbsp;</span>    
+                        <br/><br/>Date: &nbsp; <?php echo e($dateToday); ?><br/>
+                    <br/>Remarks: Copy for San Juan West Central School.<br/><br/>
+                    </p>
+                    <p>
+                    <table style="width: 100%;">
+                        <tr>
+                            <td align="center">Prepared by:</td>
+                            <td align="center">Verified by:</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td align="center">CECILLE G. MATUTO</td>
+                            <td align="center">JOY J. ALDAY</td>
+                            <td align="center">MARIA CRISANTA R. ISLA</td>
+                        </tr>
+                        <tr>
+                            <td align="center">Academic Clerk</td>
+                            <td align="center">Assistant Registrar</td>
+                            <td align="center">Registrar</td>
+                        </tr>
+                       
+                    </table>
+                    </p>
+                    
+                </div>
+                
+            </div>
+            
+        </div>     
+    </div>
+    <br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+
+</div>
+
+
+
+
+
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

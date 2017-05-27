@@ -5,7 +5,7 @@
 	<div class="row">
 		<div class="col-md-8 col-md-offset-2">
 			<div class="panel panel-default">
-				<div class="panel-heading">Register</div>
+				<div class="panel-heading">Add Instructor</div>
 				<div class="panel-body">
 					@if (count($errors) > 0)
 						<div class="alert alert-danger">
@@ -59,12 +59,18 @@
 							<div class="col-md-6">
                                                             <select name="accesslevel" class='form-control'>
                                                                 <option>Select Access...</option>
-                                                                <option value="10">College Teacher</option>
-                                                                <option value="20">K - 12 Teacher</option>
-                                                                <option value="30">Junior High Teacher</option>
-                                                                <option value="40">Elementary Teacher</option>
-                                                                <option value="50">Highest Approver</option>
-                                                                <option value="2">Registrar</option>
+                                                                <option value="{{ env('COLLEGE_TEACHER')}}">College Teacher</option>
+                                                                <option value="{{env('DIPLOMA_TEACHER')}}">Diploma Teacher</option>
+                                                                
+                                                                <!--option value="{{env('SENIOR_HIGH_SCHOOL')}}">Senior High School Teacher</option>
+                                                                <option value="{{env('JUNIOR_HIGH_TEACHER')}}">Junior High Teacher</option>
+                                                                <option value="{{env('PRIMARY_TEACHER')}}">Primary Education Teacher</option>
+                                                                <option value="{{env('PRE_SCHOOL_TEACHER')}}">Pre-School Teacher</option>
+                                                                <option value="{{env('HIGHEST_APPROVER')}}">Highest Approver</option>
+                                                                <option value="{{env('REGISTRAR')}}">Registrar</option>
+                                                                <option value="{{env('OTHERS')}}">Others</option-->
+                                                                
+                                                                
                                                                 
                                     
                                                            </select>     
@@ -91,7 +97,7 @@
 						<div class="form-group">
 							<div class="col-md-6 col-md-offset-4">
 								<button type="submit" class="btn btn-primary">
-									Register
+									Submit
 								</button>
 							</div>
 						</div>

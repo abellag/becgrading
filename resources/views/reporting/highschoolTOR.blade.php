@@ -1,0 +1,469 @@
+@extends('app')
+
+@section('content')
+<style>
+    
+    @media print{
+        @page{
+        margin-top:-1mm;
+        margin-right: -1mm;
+        margin-left: 4mm;
+        margin-bottom: 1mm;
+        
+        background-position: center !important; 
+        background-repeat: no-repeat !important; 
+        position:fixed;
+        -webkit-print-color-adjust:exact;
+        
+        position: absolute;
+  bottom: 50%;
+  z-index: -1; 
+  -webkit-transform: rotate(30deg);
+  -moz-transform: rotate(30deg);
+  -ms-transform: rotate(30deg);
+  -o-transform: rotate(30deg);
+  transform: rotate(30deg);
+        
+        }
+      
+        
+    }
+ 
+    
+    
+    
+    
+    /*.page {
+        width: 210mm;
+        min-height: 297mm;
+        padding: 20mm;
+        margin: 10mm auto;
+        border: 1px #D3D3D3 solid;
+        border-radius: 5px;
+        background: white;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+    .subpage {
+        padding: 1cm;
+        border: 5px red solid;
+        height: 257mm;
+        outline: 2cm #FFEAEA solid;
+    }
+    
+    @page {
+        size: A4;
+        margin: 0;
+    }
+    @media print {
+        html, body {
+            width: 210mm;
+            height: 297mm;        
+        }
+        .page {
+            margin: 0;
+            border: initial;
+            border-radius: initial;
+            width: initial;
+            min-height: initial;
+            box-shadow: initial;
+            background: initial;
+            page-break-after: always;
+        }
+    }*/
+    
+    
+    
+    #tableGrade #tr, #th, #td {
+    border-style : solid;
+    border-color :black;
+    border-width : 1px;
+        }
+        
+        .block{
+            float:left;
+            width: 48%;
+        } 
+      
+        
+        
+       #tableGrade #td{height: 20px;}
+       
+     
+
+</style>
+           
+<div class="col-lg-2"></div>
+<div class="col-lg-8"  id="grade" >
+    <div  class="panel" style="font-family: 'Georgia', Georgia, serif;">
+        
+        <div  id="panelHeading" class="panel-heading" >
+            <br/>
+            <br/>
+        
+            <table>
+                <tr>
+                    <td style="width: 25%" align="right"><img   src="{{URL::asset('images/logo.jpg')}}" alt="profile Pic"></td>
+                    <td style="width: 50%;" align="center"><p>
+            Republic of the Philippines<br/>
+            <b><span style="font-size:16px;">DEPARTMENT OF EDUCATION</span></b><br/>
+            REGION IV-A (CALABARZON)<br/>
+            <b>Division of Batangas </b><br/>
+            </p>
+            <p>
+                <b><span style="font-size:16px;">BATANGAS EASTERN COLLEGES</span><br/>
+            San Juan, Batangas </b><br/>
+            </p></td>
+                    <?php $photo = $studentid.'-'.$department.'.jpg'; ?>
+                    <td style="width: 25%">LRN-12345678910
+                    <img style="width: 70%; height: auto;"  src="/images/studentphoto/<?php echo $photo?>" alt="profile Pic">
+                    </td>
+                </tr> 
+                
+            </table>
+           
+        </div>
+        <div id="panelBody" class="panel-body" style=" background-position: center !important; background-repeat: no-repeat !important; background-image:url(/images/1batangas-eastern-colleges-logo.jpg) !important;background-size: 60%">
+             <div id="" class="row">
+                <div class="col-md-12">
+                   <p align="center" style="font-size:18px;"><b>SECONDARY STUDENT'S PERMANENT RECORD </b><br/></p>
+                </div>
+            </div>
+            @if(count($studentInfo)>0)
+                @foreach($studentInfo as $studentInfos)
+                    
+                
+            <div class="row">
+                <div class="col-md-12">
+                <span style="float:left">Name:</span>
+                    <div style=" float: left; border-bottom:1px solid;padding-left:10%;  width:40%" >{{$studentInfos->lastName}}, {{$studentInfos->firstName}} {{$studentInfos->middleName}}</div>
+                
+                <?php
+                if(empty($studentInfos->birthPlace))
+                {$Birthplace = ', , ';}
+                else{$Birthplace = $studentInfos->birthPlace;}
+                $Bplace = explode(",",$Birthplace);
+                
+                if(empty($studentInfos->birthDate))
+                {$BirthDate = "01/01/1000";
+                $Bdate[1]="";
+                $Bdate[2]="";
+                $Bmonth="";
+                }
+                else{
+                $BirthDate = $studentInfos->birthDate;
+                
+                $Bdate = explode("/",$BirthDate);
+                $jd=gregoriantojd($Bdate[0],$Bdate[1],$Bdate[2]);
+                $Bmonth = jdmonthname($jd,1);
+                }
+                ?>
+                <span style="float:left">Date of Birth: Year</span>
+                    <div style="height: 17px ; float: left; border-bottom:1px solid;padding-left:3%;  width:10%" >{{$Bdate[2]}}</div>
+                    <span style="float:left">Month</span>
+                    <div style="height: 17px ; float: left; border-bottom:1px solid;padding-left:3%;  width:10%" >{{$Bmonth}}</div>
+                    <span style="float:left">Day</span>
+                    <div style="height: 17px ; float: left; border-bottom:1px solid;padding-left:3%;  width:10%" >{{$Bdate[1]}}</div>
+                </div>
+            </div>
+            <div class="row">
+                
+                <div class="col-md-12">
+                    <span style="float:left">Place of Birth:&nbsp;&nbsp;Province</span>
+                    <div style="height: 17px ; float: left; border-bottom:1px solid;padding-left:3%;  width:20%" >{{$Bplace[1]}} </div>
+                    <span style="float:left">Town</span>
+                    <div style="height: 17px ; float: left; border-bottom:1px solid;padding-left:3%;  width:20%" >{{$Bplace[1]}}</div>
+                    <span style="float:left">Barrio</span>
+                    <div style="height: 17px ; float: left; border-bottom:1px solid;padding-left:3%;  width:30%" >{{$Bplace[0]}}</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <span style="float:left">Parent or Guardian:</span>
+                    <?php $parent = $studentInfos->mother ."/".$studentInfos->father." / ".$studentInfos->parent;?>
+                    <div style="height: 17px ; float: left; border-bottom:1px solid;padding-left:3%;  width:82%" >{{$parent}}</div>
+                </div>
+                
+            
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <span style="float:left">Address of Parent or Guardian:</span>
+                    <div style="height: 17px ; float: left; border-bottom:1px solid;padding-left:3%;  width:74%" >{{$studentInfos->address}}</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <span style="float:left">Intermediate Course Completed</span>
+                    <div style="height: 17px ; float: left; border-bottom:1px solid;padding-left:3%;  width:27%" >San Juan West Central</div>
+                    <span style="float:left">School Year</span>
+                    <div style="height: 17px ; float: left; border-bottom:1px solid;padding-left:3%;  width:15%" >2011 - 2012</div>
+                    <span style="float:left">General Average</span>
+                    <div style="height: 17px ; float: left; border-bottom:1px solid;padding-left:3%;  width:10%" >82.20 %</div>
+                
+                
+                </div>
+            </div> 
+            <div class="row">
+                <div class="col-md-12">
+                    <span style="float:left">Total number of years in school to complete elementary course:</span>
+                    <div style="height: 17px ; float: left; border-bottom:1px solid;padding-left:3%; width:50%" >6</div>
+                </div>
+            </div> 
+                @endforeach
+            @endif
+            
+            
+            
+            
+            
+            <div>
+                <br/>
+                 <?php $x = 0; $y = 0; $level[]=array();$schoolyear[]=array();$schoolAttended[]=array();$glevel[]=array();$z=0;?>
+                <span style=" float: left; border-bottom:3px solid; background-color: black; margin-left:2%; width:93.2%"></span>
+               
+                 @while($z<4)
+                 @if(count($schoolRecord) > 0)
+                    @foreach($schoolRecord as $schoolRecords)
+                    <?php
+                          $level[$z] = $schoolRecords->level;
+                          $schoolyear[$z] = $schoolRecords->schoolyear;
+                          $schoolAttended[$z] =  $schoolRecords->schoolAttended;
+                          $z= $z+1;
+                          ?>
+                    @endforeach
+                 @endif
+                 <?php
+                    if($z<4){
+                          $level[$z] = '';
+                          $schoolyear[$z] = '';
+                          $schoolAttended[$z] =  '';
+                          $z=$z+1;
+                    }?>
+                 @endwhile
+                
+                
+                
+                
+                
+                
+                @while($x < 4)
+                        
+                        @if($x == 2)
+                    
+                            <span style=" margin-top: 3%; float: left; border-bottom:3px solid; background-color: black; margin-left:2%; width:93.2%"></span>
+               
+                        @endif
+                
+                    <div class="block">
+                    
+                        {{$x}}
+                   
+                       
+                        <span style="float:left">Classified as</span>
+                        <div style="height: 17px ; float: left;border-bottom:1px solid; padding-left:3%;  width:30%" ><?php echo $level[$x];?></div>
+                        <span style="float:left">School Yr.</span>
+                        <div style="height: 17px ; float: left; border-bottom:1px solid;padding-left:3%;  width:33%" ><?php echo $schoolyear[$x];?></div><br>
+                        <span style="float:left">School</span>
+                        <div style="height: 17px ; float: left; border-bottom:1px solid;padding-left:3%;  width:87%" ><?php echo $schoolAttended[$x];?></div><br>
+                        
+                       
+                        <br/>
+                        
+                        
+                        
+                        <table id="tableGrade" style="width:98%; text-align:center;"> 
+                            <tr><th id="th" style="text-align:center">Subject</th><th id="th" style="text-align:center">Final Rating</th><th id="th" style="text-align:center">Action Taken</th></tr>
+                           <?php 
+                          $c = 0; $average = 0;$action = "Passed"; $i=0;
+                          ?>
+                             
+                            @while($i<4)
+                            @foreach($gradeLevel as $gl)
+                             <?php
+                             $glevel[$i]=$gl->level;
+                             $i=$i+1;
+                             ?>
+                             @endforeach
+                             <?php
+                             if($i<4){
+                                $glevel[$i] = '';
+                                $i=$i+1;
+                            }
+                             ?>
+                             @endwhile
+                             
+                            @if($glevel[$x] == $level[$x] && !empty($glevel[$x]) && !empty($level[$x]))
+                            <?php echo $level[$x]; echo $glevel[$x];?>
+                                @if(count($grade) > 0)
+                                @foreach($grade as $grades)
+                                    @if($grades->level == $level[$x])
+                                            <?php $finalrating = ($grades->firstQTRN + $grades->secondQTRN + $grades->thirdQTRN + $grades->fourthQTRN) / 4;
+                                            $rating = round($finalrating);
+                                            if($rating < 75){
+                                                $action = "Failed";
+                                            }else{$action = "Passed";}
+
+                                            if($grades->subject == 'Music' || $grades->subject == 'Arts' || $grades->subject == 'Physical Education' || $grades->subject == 'Health')
+                                            { $c = $c + 0;
+                                                $average = $average + 0;
+                                            }else{
+                                                $c = $c + 1;
+                                                $average = $average + $rating;
+                                            }?>
+
+                                            <tr>
+                                            @if($grades->subject == 'Music' || $grades->subject == 'Arts' || $grades->subject == 'Physical Education' || $grades->subject == 'Health')
+                                                <td id="td" style="text-align: left; padding-left: 5%">{{$grades->subject}}</td>
+                                            @else
+                                            <td id="td" style="text-align: left;">{{$grades->subject}}</td>
+                                            @endif
+                                            <td id="td">{{$rating}}</td><td id="td">{{$action}}</td></tr>
+                                    
+                            
+                                    @endif
+                                    
+                                @endforeach
+                                @endif
+                            @else
+                            <?php echo $level[$x]; echo $glevel[$x];?>
+                            
+                                            @if(count($subject>0))
+                                            
+                                            @foreach($subject as $subjects)
+                                            
+                                                <tr>
+                                                    @if($subjects->subject == 'Music' || $subjects->subject == 'Arts' || $subjects->subject == 'Physical Education' || $subjects->subject == 'Health')
+                                                        <td id="td" style="text-align: left; padding-left: 5%">{{$subjects->subject}}</td>
+                                                    @else
+                                                        <td id="td" style="text-align: left;">{{$subjects->subject}}</td>
+                                                    @endif
+                                                    
+                                                    <td id="td"></td><td id="td"></td></tr>
+                                            @endforeach
+                                            @endif
+                            @endif
+                            <?php if($average==0){
+                                $genAverage = 0;
+                            }else{
+                            $genAverage = $average / $c;
+                            }?>
+                            <tr id="tr"><td id="td" colspan="3" align="right"><i><b>General Average: </b></i></td></tr>
+                        </table>
+                        <span style="float:left">Total days of School</span>
+                        <div style="height: 17px ; float: left; border-bottom:1px solid; padding-left:3%;  width:66.5%" ></div><br/>
+                         <span style="float:left">Total days present</span>
+                        <div style="height: 17px ; float: left; border-bottom:1px solid;padding-left:3%;  width:68.9%" ></div><br/>
+                        <span style="float:left">Total no. of yrs. in school to date</span>
+                        <div style="height: 17px ; float: left; border-bottom:1px solid;padding-left:3%;  width:47%" >7</div><br/>
+                   
+                   
+                    
+                    
+                </div>
+                
+                <?php $x++;?>
+                @endwhile
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                <!--WORKING-->
+                
+                
+               
+                
+                
+                
+                <!--END OF WORKING-->
+                
+                
+                <br/>
+                <br/>
+                <br/>
+                
+                <div>
+                <br/>
+                <br/>
+                <br/>
+                    <p align="center" style="margin-top: 10%;letter-spacing: 10px;"><b>TRANSFER</b></p>
+                    <div  style="margin-left: 10%;margin-right:10%;">
+                    <span style="float:left; padding-left:10%;">I certify that this is a true record of</span>
+                    <div style="float:left; border-bottom:1px solid; padding-left:3%; width:55% "><b>{{$studentInfos->firstName}} &nbsp; {{$studentInfos->lastName}}</b></div>
+                    <span style="float:left">On this day,&nbsp;</span>
+                    <div style="float:left; border-bottom:1px solid; padding-left:3%; width:10%"><b><?php echo date("d");?>th</b></div>
+                    <span style="float:left;">&nbsp;of &nbsp;</span>
+                    <div style="float:left; border-bottom:1px solid; padding-left:5%; width:20%"><b><?php echo date("F");?></b></div>
+                    <span style="float:left;">&nbsp; , &nbsp;</span>
+                    <div style="float:left; border-bottom:1px solid;padding-left:5%; width:16%"><b><?php echo date("Y");?></b></div>
+                    <span style="float:left;">&nbsp; this student is eligible for admission to</span><br/>
+                    <div style="float:left;  width:100%"><span style="padding-left:5%;  padding-right:5%;border-bottom:1px solid;">
+                            <b>Grade 11</b></span>
+                    as(regular/irregular) student and has no property responsibility in this school.</div>
+                    <br/><br/><br/>
+                    <div><b>Copy for Batangas Eastern Colleges.</b></div>
+                    <br/><br/>
+                    </div>
+                    <p>
+                    <table style="width: 100%;">
+                        <tr>
+                            <td align="center">Prepared by:</td>
+                            <td align="center">Verified by:</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td align="center">CECILLE G. MATUTO</td>
+                            <td align="center">JOY J. ALDAY</td>
+                            <td align="center">MARIA CRISANTA R. ISLA</td>
+                        </tr>
+                        <tr>
+                            <td align="center">Academic Clerk</td>
+                            <td align="center">Assistant Registrar</td>
+                            <td align="center">Registrar</td>
+                        </tr>
+                       
+                    </table>
+                    </p>
+                </div>
+                
+            </div>
+            
+        </div>     
+    </div>
+    <br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+
+</div>
+
+
+
+
+
+
+@stop

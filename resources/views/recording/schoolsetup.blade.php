@@ -1,0 +1,111 @@
+@extends('/recording/approver')
+
+@section('content1')        
+
+<script>
+    $(window).load(function(){
+
+var year = 1950;
+var till = new Date().getFullYear();
+var options1 = "";
+var options2 = "";
+for(var y=year; y<=(till+1); y++){
+  options1 += "<option>"+ y +"</option>";
+  options2 += "<option>"+ y +"</option>";
+}
+document.getElementById("fromYear").innerHTML = options1;
+document.getElementById("toYear").innerHTML = options2;
+  });
+</script>
+
+
+<div class="col-lg-8"  id="grade" >
+			<div class="panel panel-default">
+                                <div class="panel-body">
+				
+					<form class="form-horizontal" role="form" method="POST" action="{{url('/add/school/attended')}}">
+						<input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
+                                                <label class="col-md-4 control-label">Student ID</label>
+							<div class="col-md-6">
+                                                            <input class='form-control' text="text" onkeypress="getStudentId(event)" name="studentId" id="studentId"/>
+                                                
+                                                        </div>
+                                                <label class="col-md-4 control-label">School Year</label>
+							<div class="col-md-3">
+                                                             From <select name="fromYear" id="fromYear" onchange="checkValues(this.value)" class='form-control fromYear'>
+                                                             </select> 
+                                                            
+                                                        </div>  
+                                                        <div class="col-md-3">
+                                                            To <select name="toYear" id="toYear"  class='form-control toYear' onchange="checkValue(this.value)">
+                                                             </select>   
+                                                        </div>
+                                                <label class="col-md-4 control-label">School Attended</label>
+							<div class="col-md-6">
+                                                             <input class='form-control' type="text" name="schoolAttended" />
+                                                        </div>
+                                                <label class="col-md-4 control-label">Level</label>
+							<div class="col-md-6">
+                                                            <select name="level" id="gradeLevel"  class='form-control'>
+                                                                <option>Select Level</option>
+                                                                @if(count($level)>0)    
+                                                                    @foreach($level as $levels)
+                                                                        <option value="{{$levels->level}}">{{$levels->level}}</option>
+                                                                     @endforeach
+                                                                @endif
+                                                            </select>    
+                                                        </div>
+                                                
+                                                <label class="col-md-4 control-label">School Days</label>
+							<div class="col-md-6">
+                                                          <input class='form-control' type="text" name="schoolDays" />
+                                                        </div>
+                                                
+                                                <label class="col-md-4 control-label">Days Present</label>
+							<div class="col-md-6">
+                                                            <input class='form-control' type="text" name="presentDays" />
+                                                        </div>
+                                                
+                                                <label class="col-md-4 control-label">Final Rating</label>
+							<div class="col-md-6">
+                                                            <input class='form-control' type="text" name="finalRating" />
+                                                        </div>
+                                                
+                                                <div class="form-group">
+                                               <div class="col-md-6 col-md-offset-4">
+								<button type="submit" class="btn btn-primary">
+									Add
+								</button>
+							</div>
+                                                </div>
+                                                      
+                                                
+					</form>
+                                    <div class="form-group">
+							<div class="col-md-12">
+                                                            <table class="table table-striped" style="padding-right:10px"> 
+                                                                <caption>Student School Record</caption>
+                                                                <tr><th width="30%">School Year</th><th width="40%">School Attended</th>
+                                                                    <th width="18%">Level</th><th colspan="2" width="5%">School<br/> Days</th>
+                                                                    <th colspan="2" width="5%">Days<br/> Present</th><th colspan="2" width="5%">Final<br/> Rating</th>
+                                                                    <th width="10%">Action</th>
+                                                                </tr>
+                                                                
+                                                           </table>
+                                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+							<div class="col-md-12">
+                                                            <table name="school" class="table table-striped" id="school" style="padding-right:10px"> 
+                                                            </table>
+                                                        </div>
+                                    </div>
+                                    
+				</div>
+			</div>
+		</div>
+	
+
+@stop
+
